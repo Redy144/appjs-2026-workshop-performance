@@ -2,11 +2,11 @@ import { useContext, useState } from "react";
 import { useRouter } from "expo-router";
 import {
   GestureResponderEvent,
-  Image,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 
 import { ImageCarousel } from "@/components/feed/content/image-carousel";
 import { PostOptionsMenu } from "@/components/feed/header/post-options-menu";
