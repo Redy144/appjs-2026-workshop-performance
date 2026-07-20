@@ -1,15 +1,17 @@
 import { View, StyleSheet } from "react-native";
 
 import { FeedImage } from "@/data/mock-feed";
-import { ImageWithShimmer } from "@/components/feed/shimmer/image-with-shimmer";
+import { Image } from "expo-image";
+import { DEFAULT_BLURHASH } from "../comments/constant";
 
 const IMAGE_WIDTH = 400;
 
 export const CarouselImage = ({ image }: { image: FeedImage }) => (
   <View>
-    <ImageWithShimmer
+    <Image
       source={{ uri: image.uri }}
       style={{ width: IMAGE_WIDTH, aspectRatio: image.aspectRatio }}
+      placeholder={{ blurhash: DEFAULT_BLURHASH }}
     />
     <View style={styles.vignetteTop} />
     <View style={styles.vignetteBottom} />

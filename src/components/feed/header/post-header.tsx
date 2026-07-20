@@ -1,11 +1,18 @@
 import { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, GestureResponderEvent, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  GestureResponderEvent,
+  StyleSheet,
+} from "react-native";
 import { useRouter } from "expo-router";
 
 import { ColorsContext } from "@/context/colors-context";
 import { VerifiedIcon } from "@/components/feed/icons/verified-icon";
-import { ImageWithShimmer } from "@/components/feed/shimmer/image-with-shimmer";
 import { PostOptionsMenu } from "./post-options-menu";
+import { Image } from "expo-image";
+import { DEFAULT_BLURHASH } from "../comments/constant";
 
 export const PostHeader = ({
   postId,
@@ -25,7 +32,9 @@ export const PostHeader = ({
   const colors = useContext(ColorsContext);
   const router = useRouter();
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
-  const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | undefined>();
+  const [menuAnchor, setMenuAnchor] = useState<
+    { x: number; y: number } | undefined
+  >();
 
   const openLocation = () => {
     router.push(`/location/${encodeURIComponent(locationName)}`);
@@ -45,28 +54,45 @@ export const PostHeader = ({
           onPress={() => router.push(`/profile/${username}`)}
         >
           <View style={styles.avatarClip}>
-            <ImageWithShimmer source={{ uri: avatar }} style={styles.avatar} />
+            <Image
+              source={{ uri: avatar }}
+              style={styles.avatar}
+              placeholder={{ blurhash: DEFAULT_BLURHASH }}
+            />
             <View style={styles.avatarOverlay} />
           </View>
 
           <View>
             <View style={styles.nameRow}>
-              <Text style={{ fontWeight: "600", fontSize: 14, color: colors.text }}>{username}</Text>
-              {isVerified && (
-                <VerifiedIcon size={14} color="#3d2847" />
-              )}
+              <Text
+                style={{ fontWeight: "600", fontSize: 14, color: colors.text }}
+              >
+                {username}
+              </Text>
+              {isVerified && <VerifiedIcon size={14} color="#3d2847" />}
             </View>
             <TouchableOpacity onPress={openLocation}>
               <View style={styles.locationRow}>
-                <View style={[styles.locationDot, { backgroundColor: colors.tint + "50" }]} />
-                <Text style={{ fontSize: 11, color: colors.icon }}>{locationName}</Text>
+                <View
+                  style={[
+                    styles.locationDot,
+                    { backgroundColor: colors.tint + "50" },
+                  ]}
+                />
+                <Text style={{ fontSize: 11, color: colors.icon }}>
+                  {locationName}
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handleMenuPress}>
-          <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.text }}>•••</Text>
+          <Text
+            style={{ fontSize: 16, fontWeight: "bold", color: colors.text }}
+          >
+            •••
+          </Text>
         </TouchableOpacity>
       </View>
 

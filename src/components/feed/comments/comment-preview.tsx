@@ -1,14 +1,20 @@
 import { useState, useEffect, useContext } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-
+import { Image } from "expo-image";
 import { ColorsContext } from "@/context/colors-context";
 import { HeartIcon } from "@/components/feed/icons/heart-icon";
-import { ImageWithShimmer } from "@/components/feed/shimmer/image-with-shimmer";
 import { FeedComment } from "@/data/mock-feed";
 import { formatRelativeTime } from "@/utils/feed-utils";
+import { DEFAULT_BLURHASH } from "./constant";
 
-export const CommentPreview = ({ comment, postId }: { comment: FeedComment; postId: string }) => {
+export const CommentPreview = ({
+  comment,
+  postId,
+}: {
+  comment: FeedComment;
+  postId: string;
+}) => {
   const colors = useContext(ColorsContext);
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
@@ -31,7 +37,11 @@ export const CommentPreview = ({ comment, postId }: { comment: FeedComment; post
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={openProfile}>
-        <ImageWithShimmer source={{ uri: comment.avatar }} style={[styles.avatar, styles.avatarClip]} />
+        <Image
+          source={{ uri: comment.avatar }}
+          style={[styles.avatar, styles.avatarClip]}
+          placeholder={{ blurhash: DEFAULT_BLURHASH }}
+        />
       </TouchableOpacity>
       <View style={styles.body}>
         <Text style={{ fontSize: 13, color: colors.text, lineHeight: 18 }}>
@@ -41,10 +51,18 @@ export const CommentPreview = ({ comment, postId }: { comment: FeedComment; post
           {comment.text}
         </Text>
         <View style={styles.meta}>
-          <Text style={{ fontSize: 11, color: colors.icon }}>{formattedTime}</Text>
-          <Text style={{ fontSize: 11, color: colors.icon }}>{likeCount} likes</Text>
+          <Text style={{ fontSize: 11, color: colors.icon }}>
+            {formattedTime}
+          </Text>
+          <Text style={{ fontSize: 11, color: colors.icon }}>
+            {likeCount} likes
+          </Text>
           <TouchableOpacity onPress={handleReply}>
-            <Text style={{ fontSize: 11, color: colors.icon, fontWeight: "600" }}>Reply</Text>
+            <Text
+              style={{ fontSize: 11, color: colors.icon, fontWeight: "600" }}
+            >
+              Reply
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -55,7 +73,11 @@ export const CommentPreview = ({ comment, postId }: { comment: FeedComment; post
         }}
         style={styles.heartButton}
       >
-        <HeartIcon size={12} color={isLiked ? "#FF6B6B" : colors.icon} filled={isLiked} />
+        <HeartIcon
+          size={12}
+          color={isLiked ? "#FF6B6B" : colors.icon}
+          filled={isLiked}
+        />
       </TouchableOpacity>
     </View>
   );
