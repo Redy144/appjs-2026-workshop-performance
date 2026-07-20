@@ -38,6 +38,10 @@ export const PostActionBar = ({
     });
   }, []);
 
+  const handleShareComplete = useCallback(() => {
+    setShareCount((prevShareCount) => prevShareCount + 1);
+  }, []);
+
   return (
     <>
       <View
@@ -55,9 +59,7 @@ export const PostActionBar = ({
             postId={postId}
             username={username}
             colors={colors}
-            onShareComplete={() =>
-              setShareCount((prevShareCount) => prevShareCount + 1)
-            }
+            onShareComplete={handleShareComplete}
           />
         </View>
         <BookmarkButton
