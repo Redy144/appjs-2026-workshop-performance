@@ -1,5 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useDeferredValue,
+  // useTransition,
+} from "react";
 import {
   View,
   Text,
@@ -43,6 +50,18 @@ const PostDetailScreen = () => {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
+  // const [, startTransition] = useTransition();
+  // const [showRelatedPosts, setShowRelatedPosts] = useState(false);
+  const deferredPost = useDeferredValue(post);
+
+  // useEffect(() => {
+  //   setShowRelatedPosts(false);
+  //   if (!post) return;
+  //   startTransition(() => {
+  //     setShowRelatedPosts(true);
+  //   });
+  // }, [post]);
+
   useEffect(() => {
     const foundPost = findPostForDetails(id);
     if (foundPost) {
@@ -54,10 +73,8 @@ const PostDetailScreen = () => {
   const hasNewComments = comments.length > prevCommentsLengthRef.current;
   prevCommentsLengthRef.current = comments.length;
 
-  const relatedPosts = useMemo(
-    () => (post ? findRelatedPosts(post) : []),
-    [post],
-  );
+  // const relatedPosts = showRelatedPosts && post ? findRelatedPosts(post) : [];
+  const relatedPosts = deferredPost ? findRelatedPosts(deferredPost) : [];
 
   const handleReply = useCallback((commentId: string, username: string) => {
     setReplyInfo({ commentId, username });
