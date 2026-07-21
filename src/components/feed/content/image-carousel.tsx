@@ -1,5 +1,12 @@
 import { useState, useContext } from "react";
-import { ScrollView, View, Pressable, NativeSyntheticEvent, NativeScrollEvent, StyleSheet } from "react-native";
+import {
+  ScrollView,
+  View,
+  Pressable,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  StyleSheet,
+} from "react-native";
 
 import { ColorsContext } from "@/context/colors-context";
 import { FeedImage } from "@/data/mock-feed";
@@ -31,7 +38,7 @@ export const ImageCarousel = ({
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
+        onMomentumScrollEnd={handleScroll}
         scrollEventThrottle={16}
       >
         {images.map((image, i) => (
