@@ -3,9 +3,7 @@ import { View, TouchableOpacity, Share, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 import { ColorsContext } from "@/context/colors-context";
-import { HeartIcon } from "@/components/feed/icons/heart-icon";
-import { CommentIcon } from "@/components/feed/icons/comment-icon";
-import { ShareIcon } from "@/components/feed/icons/share-icon";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { LikesCount } from "@/components/feed/content/likes-count";
 
 export const ActionButtons = ({
@@ -13,7 +11,7 @@ export const ActionButtons = ({
   username,
   likes,
   isLiked,
-  onLike
+  onLike,
 }: {
   postId: string;
   username: string;
@@ -44,7 +42,7 @@ export const ActionButtons = ({
     try {
       await Share.share({
         message: `Check out this post by @${username}: https://example.com/post/${postId}`,
-        url: `https://example.com/post/${postId}`
+        url: `https://example.com/post/${postId}`,
       });
     } catch {
       // User cancelled
@@ -60,13 +58,17 @@ export const ActionButtons = ({
       <View style={styles.container}>
         <View style={styles.leftButtons}>
           <TouchableOpacity onPress={handleLike} style={styles.iconButton}>
-            <HeartIcon size={26} color={isLiked ? "#FF6B6B" : colors.text} filled={isLiked} />
+            {isLiked ? (
+              <IconSymbol name={"heart.fill"} size={26} color={"#FF6B6B"} />
+            ) : (
+              <IconSymbol name={"heart"} size={26} color={colors.text} />
+            )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={handleComment}>
-            <CommentIcon size={24} color={colors.text} />
+            <IconSymbol name={"bubble.right"} size={24} color={colors.text} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={handleShare}>
-            <ShareIcon size={24} color={colors.text} />
+            <IconSymbol name={"paperplane"} size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -82,14 +84,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 12,
-    paddingBottom: 8
+    paddingBottom: 8,
   },
   leftButtons: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14
+    gap: 14,
   },
   iconButton: {
-    padding: 2
-  }
+    padding: 2,
+  },
 });

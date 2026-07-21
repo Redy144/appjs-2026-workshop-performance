@@ -9,7 +9,7 @@ import {
 import { useRouter } from "expo-router";
 
 import { ColorsContext } from "@/context/colors-context";
-import { VerifiedIcon } from "@/components/feed/icons/verified-icon";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PostOptionsMenu } from "./post-options-menu";
 import { Image } from "expo-image";
 import { DEFAULT_BLURHASH } from "../comments/constant";
@@ -69,7 +69,13 @@ export const PostHeader = ({
               >
                 {username}
               </Text>
-              {isVerified && <VerifiedIcon size={14} color="#3d2847" />}
+              {isVerified && (
+                <IconSymbol
+                  name={"checkmark.seal.fill"}
+                  size={14}
+                  color="#3d2847"
+                />
+              )}
             </View>
             <TouchableOpacity onPress={openLocation}>
               <View style={styles.locationRow}>
