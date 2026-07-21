@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -175,7 +175,7 @@ export default function LikesScreen() {
   const { postId } = useLocalSearchParams<{ postId: string }>();
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
+  const colors = useMemo(() => Colors[colorScheme ?? "light"], [colorScheme]);
   const insets = useSafeAreaInsets();
 
   const [users, setUsers] = useState<LikeUser[]>([]);

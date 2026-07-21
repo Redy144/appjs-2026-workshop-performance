@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -44,7 +44,7 @@ export default function HashtagScreen() {
   const { tag } = useLocalSearchParams<{ tag: string }>();
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
+  const colors = useMemo(() => Colors[colorScheme ?? "light"], [colorScheme]);
   const insets = useSafeAreaInsets();
 
   const [posts, setPosts] = useState<FeedPost[]>([]);

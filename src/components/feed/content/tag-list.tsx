@@ -1,19 +1,15 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 import { ColorsContext } from "@/context/colors-context";
 import { formatTags } from "@/utils/feed-utils";
 
-export const TagList = ({
-  tags,
-}: {
-  tags: string[];
-}) => {
+export const TagList = ({ tags }: { tags: string[] }) => {
   const colors = useContext(ColorsContext);
   const router = useRouter();
 
-  const formattedTags = formatTags(tags);
+  const formattedTags = useMemo(() => formatTags(tags), [tags]);
 
   if (formattedTags.length === 0) return null;
 

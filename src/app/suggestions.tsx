@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -223,7 +223,7 @@ function SuggestedUserCard({
 export default function SuggestionsScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
+  const colors = useMemo(() => Colors[colorScheme ?? "light"], [colorScheme]);
   const insets = useSafeAreaInsets();
 
   const [users] = useState<SuggestedUser[]>(generateSuggestedUsers());

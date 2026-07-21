@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   View,
   Text,
@@ -31,7 +31,7 @@ export default function CommentsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
+  const colors = useMemo(() => Colors[colorScheme ?? "light"], [colorScheme]);
   const insets = useSafeAreaInsets();
   const inputRef = useRef<TextInput>(null);
 

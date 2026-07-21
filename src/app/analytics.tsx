@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -33,7 +33,7 @@ const DATA_SERIES_OPTIONS: { key: DataSeries; label: string; color: string }[] =
 export default function AnalyticsScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
+  const colors = useMemo(() => Colors[colorScheme ?? "light"], [colorScheme]);
   const insets = useSafeAreaInsets();
 
   const [selectedUserIndex, setSelectedUserIndex] = useState(0);

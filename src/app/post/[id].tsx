@@ -6,6 +6,7 @@ import {
   useRef,
   // useDeferredValue,
   useTransition,
+  useMemo,
 } from "react";
 import {
   View,
@@ -48,7 +49,7 @@ const PostDetailScreen = () => {
   const [newComment, setNewComment] = useState("");
   const [replyInfo, setReplyInfo] = useState<ReplyInfo | null>(null);
   const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
+  const colors = useMemo(() => Colors[colorScheme ?? "light"], [colorScheme]);
 
   const [, startTransition] = useTransition();
   const [relatedPosts, setRelatedPosts] = useState<RelatedPostResult[]>([]);
