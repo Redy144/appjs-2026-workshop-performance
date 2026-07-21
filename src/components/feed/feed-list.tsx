@@ -1,64 +1,75 @@
-import { useRef, useState } from "react";
-import {
-  FlatList,
-  LayoutChangeEvent,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  View,
-} from "react-native";
+import { useCallback } from "react";
+import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 
 import { FeedItem } from "@/components/feed/feed-item";
 import { SuggestedPostsSection } from "@/components/feed/suggestions/suggested-posts-section";
 import { FeedListItem } from "@/data/mock-feed";
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
+import { FlashList } from "@shopify/flash-list";
 
-export const FeedList = ({
-  data,
-  onLike,
-}: {
-  data: FeedListItem[];
-  onLike: (id: string) => void;
-}) => {
-  const contentHeight = useRef(0);
-  const layoutHeight = useRef(0);
-  const [progress, setProgress] = useState(0);
+const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
-  const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offset = e.nativeEvent.contentOffset.y;
-    const max = Math.max(1, contentHeight.current - layoutHeight.current);
-    const p = Math.min(1, Math.max(0, offset / max));
-    setProgress(p);
-  };
+export const FeedList = ({ data }: { data: FeedListItem[] }) => {
+  const contentHeight = useSharedValue(0);
+  const layoutHeight = useSharedValue(0);
+  const progress = useSharedValue(0);
+  const offset = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      width: `${progress.value * 100}%`,
+    };
+  });
+
+  const handleScroll = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      offset.value = event.contentOffset.y;
+      progress.value = Math.min(
+        1,
+        Math.max(
+          0,
+          offset.value / Math.max(1, contentHeight.value - layoutHeight.value),
+        ),
+      );
+    },
+  });
 
   const handleContentSizeChange = (_w: number, h: number) => {
-    contentHeight.current = h;
+    contentHeight.value = h;
   };
 
   const handleLayout = (e: LayoutChangeEvent) => {
-    layoutHeight.current = e.nativeEvent.layout.height;
+    layoutHeight.value = e.nativeEvent.layout.height;
   };
+
+  const renderItem = useCallback(({ item }: { item: FeedListItem }) => {
+    return item.type === "suggestions" ? (
+      <SuggestedPostsSection posts={item.posts} />
+    ) : (
+      <FeedItem item={item} />
+    );
+  }, []);
+
+  const getItemType = useCallback((item: FeedListItem) => {
+    return item.type;
+  }, []);
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.progressTrack}>
-        <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
+        <Animated.View style={[styles.progressFill, animatedStyle]} />
       </View>
-      <FlatList
+      <AnimatedFlashList
         data={data}
-        renderItem={({ item }) => (
-          item.type === "suggestions" ? (
-            <SuggestedPostsSection posts={item.posts} />
-          ) : (
-            <FeedItem item={item} onLike={onLike} />
-          )
-        )}
-        keyExtractor={(_item, index) => String(index)}
+        renderItem={({ item }) => renderItem({ item: item as FeedListItem })}
+        keyExtractor={(item) => (item as FeedListItem).id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
-        windowSize={21}
-        maxToRenderPerBatch={10}
-        initialNumToRender={5}
-        removeClippedSubviews={false}
+        getItemType={(item) => getItemType(item as FeedListItem)}
         onScroll={handleScroll}
         scrollEventThrottle={16}
         onContentSizeChange={handleContentSizeChange}

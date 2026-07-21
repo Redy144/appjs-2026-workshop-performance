@@ -1,9 +1,18 @@
 import { useState, useContext } from "react";
-import { ScrollView, View, Pressable, NativeSyntheticEvent, NativeScrollEvent, StyleSheet } from "react-native";
+import {
+  ScrollView,
+  View,
+  Pressable,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  StyleSheet,
+} from "react-native";
 
 import { ColorsContext } from "@/context/colors-context";
 import { FeedImage } from "@/data/mock-feed";
 import { CarouselImage } from "./carousel-image";
+
+import { useMappingHelper } from "@shopify/flash-list";
 
 const IMAGE_WIDTH = 400;
 
@@ -16,6 +25,7 @@ export const ImageCarousel = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const colors = useContext(ColorsContext);
+  const { getMappingKey } = useMappingHelper();
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offset = e.nativeEvent.contentOffset.x;
@@ -31,11 +41,14 @@ export const ImageCarousel = ({
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
+        onMomentumScrollEnd={handleScroll}
         scrollEventThrottle={16}
       >
-        {images.map((image, i) => (
-          <Pressable key={`${image.uri}-${i}`} onPress={onImagePress}>
+        {images.map((image, index) => (
+          <Pressable
+            key={getMappingKey(image.uri, index)}
+            onPress={onImagePress}
+          >
             <CarouselImage image={image} />
           </Pressable>
         ))}
@@ -45,7 +58,7 @@ export const ImageCarousel = ({
         <View style={styles.dotsContainer}>
           {images.map((_, i) => (
             <View
-              key={`dot-${i}`}
+              key={getMappingKey(`dot-${i}`, i)}
               style={[
                 styles.dot,
                 i === activeIndex

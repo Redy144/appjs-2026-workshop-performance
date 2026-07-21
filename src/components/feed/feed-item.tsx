@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import { View, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -14,13 +14,11 @@ import { PostTimestamp } from "./content/post-timestamp";
 import { TagList } from "./content/tag-list";
 import { PostHeader } from "./header/post-header";
 
-export const FeedItem = ({
+export const FeedItem = memo(function FeedItem({
   item,
-  onLike,
 }: {
   item: FeedPostSlim;
-  onLike: (id: string) => void;
-}) => {
+}) {
   const colors = useContext(ColorsContext);
   const router = useRouter();
   const [isHidden, setIsHidden] = useState(false);
@@ -57,8 +55,6 @@ export const FeedItem = ({
         postId={item.id}
         username={item.user.username}
         likes={item.likes}
-        isLiked={item.isLiked}
-        onLike={onLike}
       />
 
       <PostCaption username={item.user.username} caption={item.caption} />
@@ -72,7 +68,7 @@ export const FeedItem = ({
       <PostTimestamp timestamp={item.timestamp} />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

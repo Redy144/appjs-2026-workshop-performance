@@ -603,7 +603,7 @@ function generateReplies(
     replies.push({
       id: `reply-${postIndex}-${commentIndex}-${i}`,
       username: usernames[userIdx],
-      avatar: `https://i.pravatar.cc/150?img=${(userIdx % 70) + 1}`,
+      avatar: `https://i.pravatar.cc/64?img=${(userIdx % 70) + 1}`,
       text: commentTexts[
         (postIndex + commentIndex + i * 2) % commentTexts.length
       ],
@@ -682,7 +682,7 @@ function generateCommentReactions(
         usernames.length;
       users.push({
         username: usernames[userIdx],
-        avatar: `https://i.pravatar.cc/150?img=${(userIdx % 70) + 1}`,
+        avatar: `https://i.pravatar.cc/64?img=${(userIdx % 70) + 1}`,
         timestamp: timestamps[(postIndex + u) % timestamps.length],
       });
     }
@@ -733,7 +733,7 @@ function generateComments(postIndex: number, count: number): FeedComment[] {
     comments.push({
       id: `comment-${postIndex}-${i}`,
       username,
-      avatar: `https://i.pravatar.cc/150?img=${(userIdx % 70) + 1}`,
+      avatar: `https://i.pravatar.cc/64?img=${(userIdx % 70) + 1}`,
       text: commentTexts[(postIndex + i * 3) % commentTexts.length],
       likes: Math.floor(Math.random() * 200),
       timestamp: timestamps[(postIndex + i) % timestamps.length],
@@ -785,8 +785,8 @@ function generateSuggestedPosts(postIndex: number): SuggestedPost[] {
     suggestions.push({
       id: `suggested-${postIndex}-${i}`,
       username: usernames[userIdx],
-      avatar: `https://i.pravatar.cc/150?img=${(userIdx % 70) + 1}`,
-      image: `https://picsum.photos/id/${picsumId}/1080/1080`,
+      avatar: `https://i.pravatar.cc/64?img=${(userIdx % 70) + 1}`,
+      image: `https://picsum.photos/id/${picsumId}/320/320`,
       caption:
         captions[(postIndex + i * 2) % captions.length].slice(0, 60) + "...",
       likes: Math.floor(Math.random() * 5000),
@@ -893,7 +893,7 @@ function generateMutualFollowers(
     const idx = (userIndex * 3 + i * 7) % usernames.length;
     mutuals.push({
       username: usernames[idx],
-      avatar: `https://i.pravatar.cc/150?img=${(idx % 70) + 1}`,
+      avatar: `https://i.pravatar.cc/64?img=${(idx % 70) + 1}`,
     });
   }
   return mutuals;
@@ -920,7 +920,7 @@ function generateReactions(postIndex: number): Reaction[] {
       const userIdx = (postIndex * 7 + r * 13 + u) % usernames.length;
       users.push({
         username: usernames[userIdx],
-        avatar: `https://i.pravatar.cc/150?img=${(userIdx % 70) + 1}`,
+        avatar: `https://i.pravatar.cc/64?img=${(userIdx % 70) + 1}`,
         timestamp: timestamps[(postIndex + u) % timestamps.length],
       });
     }
@@ -948,7 +948,7 @@ function generateShares(postIndex: number): Share[] {
     shares.push({
       id: `share-${postIndex}-${i}`,
       username: usernames[userIdx],
-      avatar: `https://i.pravatar.cc/150?img=${(userIdx % 70) + 1}`,
+      avatar: `https://i.pravatar.cc/64?img=${(userIdx % 70) + 1}`,
       sharedAt: timestamps[(postIndex + i) % timestamps.length],
       platform: platforms[i % platforms.length],
       message: i % 3 === 0 ? "Check this out!" : undefined,
@@ -1342,8 +1342,8 @@ function generateMockFeed(count: number): FeedPost[] {
       id: String(i + 1),
       user: {
         username: usernames[userIndex],
-        avatar: `https://i.pravatar.cc/150?img=${(userIndex % 70) + 1}`,
-        avatarHD: `https://i.pravatar.cc/500?img=${(userIndex % 70) + 1}`,
+        avatar: `https://i.pravatar.cc/64?img=${(userIndex % 70) + 1}`,
+        avatarHD: `https://i.pravatar.cc/80?img=${(userIndex % 70) + 1}`,
         isVerified: i % 3 === 0,
         badges: generateBadges(userIndex),
         stats: generateUserStats(userIndex),
