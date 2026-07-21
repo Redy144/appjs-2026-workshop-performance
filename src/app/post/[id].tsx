@@ -1,5 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  // useDeferredValue,
+  useTransition,
+} from "react";
 import {
   View,
   Text,
@@ -23,7 +30,7 @@ import { detectSpam } from "@/utils/spam-detection";
 
 import { CommentInput } from "@/components/feed/comment-input";
 import { CommentItem } from "@/components/feed/comments/comment-item";
-import { findRelatedPosts } from "@/utils/related-posts";
+import { findRelatedPosts, RelatedPostResult } from "@/utils/related-posts";
 
 interface ReplyInfo {
   commentId: string;
@@ -37,21 +44,30 @@ const PostDetailScreen = () => {
   const inputRef = useRef<TextInput>(null);
   const prevCommentsLengthRef = useRef(0);
   const [post, setPost] = useState<FeedPost | null>(null);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
   const [comments, setComments] = useState<FeedComment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [replyInfo, setReplyInfo] = useState<ReplyInfo | null>(null);
-  const [shareCount, setShareCount] = useState(0);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
+
+  const [, startTransition] = useTransition();
+  const [relatedPosts, setRelatedPosts] = useState<RelatedPostResult[]>([]);
+  // const deferredPost = useDeferredValue(post);
+
+  useEffect(() => {
+    if (!post) {
+      setRelatedPosts([]);
+      return;
+    }
+    startTransition(() => {
+      setRelatedPosts(findRelatedPosts(post));
+    });
+  }, [post]);
 
   useEffect(() => {
     const foundPost = findPostForDetails(id);
     if (foundPost) {
       setPost(foundPost);
-      setIsLiked(foundPost.isLiked);
-      setLikesCount(foundPost.likes);
       setComments(foundPost.comments);
     }
   }, [id]);
@@ -59,7 +75,7 @@ const PostDetailScreen = () => {
   const hasNewComments = comments.length > prevCommentsLengthRef.current;
   prevCommentsLengthRef.current = comments.length;
 
-  const relatedPosts = post ? findRelatedPosts(post) : [];
+  // const relatedPosts = deferredPost ? findRelatedPosts(deferredPost) : [];
 
   const handleReply = useCallback((commentId: string, username: string) => {
     setReplyInfo({ commentId, username });
@@ -128,16 +144,6 @@ const PostDetailScreen = () => {
     setNewComment("");
   }, []);
 
-  const handleLike = useCallback(() => {
-    setIsLiked((prevIsLiked) => {
-      const nextIsLiked = !prevIsLiked;
-      setLikesCount(
-        (prevLikesCount) => prevLikesCount + (nextIsLiked ? 1 : -1),
-      );
-      return nextIsLiked;
-    });
-  }, []);
-
   if (!post) {
     return (
       <ColorsContext.Provider value={colors}>
@@ -196,19 +202,11 @@ const PostDetailScreen = () => {
         {/* Post Content and Comments List */}
         <FlatList
           data={comments}
-          extraData={[isLiked, likesCount, shareCount]}
           ListHeaderComponent={
             <PostDetailHeader
               post={post}
-              isLiked={isLiked}
-              likesCount={likesCount}
-              shareCount={shareCount}
               commentsCount={comments.length}
               hasNewComments={hasNewComments}
-              onLike={handleLike}
-              onShareComplete={() =>
-                setShareCount((prevShareCount) => prevShareCount + 1)
-              }
             />
           }
           renderItem={({ item }) => (
