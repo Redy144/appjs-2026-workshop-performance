@@ -9,6 +9,9 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
+import { FlashList } from "@shopify/flash-list";
+
+const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 export const FeedList = ({ data }: { data: FeedListItem[] }) => {
   const contentHeight = useSharedValue(0);
@@ -35,13 +38,6 @@ export const FeedList = ({ data }: { data: FeedListItem[] }) => {
     },
   });
 
-  // const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-  //   const offset = e.nativeEvent.contentOffset.y;
-  //   const max = Math.max(1, contentHeight.current - layoutHeight.current);
-  //   const p = Math.min(1, Math.max(0, offset / max));
-  //   setProgress(p);
-  // };
-
   const handleContentSizeChange = (_w: number, h: number) => {
     contentHeight.value = h;
   };
@@ -58,17 +54,22 @@ export const FeedList = ({ data }: { data: FeedListItem[] }) => {
     );
   }, []);
 
+  const getItemType = useCallback((item: FeedListItem) => {
+    return item.type;
+  }, []);
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.progressTrack}>
         <Animated.View style={[styles.progressFill, animatedStyle]} />
       </View>
-      <Animated.FlatList
+      <AnimatedFlashList
         data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => renderItem({ item: item as FeedListItem })}
+        keyExtractor={(item) => (item as FeedListItem).id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
+        getItemType={(item) => getItemType(item as FeedListItem)}
         onScroll={handleScroll}
         scrollEventThrottle={16}
         onContentSizeChange={handleContentSizeChange}
