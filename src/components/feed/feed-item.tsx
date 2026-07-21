@@ -14,13 +14,7 @@ import { PostTimestamp } from "./content/post-timestamp";
 import { TagList } from "./content/tag-list";
 import { PostHeader } from "./header/post-header";
 
-export const FeedItem = ({
-  item,
-  onLike,
-}: {
-  item: FeedPostSlim;
-  onLike: (id: string) => void;
-}) => {
+export const FeedItem = ({ item }: { item: FeedPostSlim }) => {
   const colors = useContext(ColorsContext);
   const router = useRouter();
   const [isHidden, setIsHidden] = useState(false);
@@ -57,8 +51,6 @@ export const FeedItem = ({
         postId={item.id}
         username={item.user.username}
         likes={item.likes}
-        isLiked={item.isLiked}
-        onLike={onLike}
       />
 
       <PostCaption username={item.user.username} caption={item.caption} />

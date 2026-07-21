@@ -12,13 +12,7 @@ import { FeedItem } from "@/components/feed/feed-item";
 import { SuggestedPostsSection } from "@/components/feed/suggestions/suggested-posts-section";
 import { FeedListItem } from "@/data/mock-feed";
 
-export const FeedList = ({
-  data,
-  onLike,
-}: {
-  data: FeedListItem[];
-  onLike: (id: string) => void;
-}) => {
+export const FeedList = ({ data }: { data: FeedListItem[] }) => {
   const contentHeight = useRef(0);
   const layoutHeight = useRef(0);
   const [progress, setProgress] = useState(0);
@@ -45,14 +39,14 @@ export const FeedList = ({
       </View>
       <FlatList
         data={data}
-        renderItem={({ item }) => (
+        renderItem={({ item }) =>
           item.type === "suggestions" ? (
             <SuggestedPostsSection posts={item.posts} />
           ) : (
-            <FeedItem item={item} onLike={onLike} />
+            <FeedItem item={item} />
           )
-        )}
-        keyExtractor={(_item, index) => String(index)}
+        }
+        keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
         windowSize={21}
