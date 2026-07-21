@@ -4,8 +4,8 @@ import {
   useEffect,
   useCallback,
   useRef,
-  useDeferredValue,
-  // useTransition,
+  // useDeferredValue,
+  useTransition,
 } from "react";
 import {
   View,
@@ -30,7 +30,7 @@ import { detectSpam } from "@/utils/spam-detection";
 
 import { CommentInput } from "@/components/feed/comment-input";
 import { CommentItem } from "@/components/feed/comments/comment-item";
-import { findRelatedPosts } from "@/utils/related-posts";
+import { findRelatedPosts, RelatedPostResult } from "@/utils/related-posts";
 
 interface ReplyInfo {
   commentId: string;
@@ -50,17 +50,19 @@ const PostDetailScreen = () => {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
-  // const [, startTransition] = useTransition();
-  // const [showRelatedPosts, setShowRelatedPosts] = useState(false);
-  const deferredPost = useDeferredValue(post);
+  const [, startTransition] = useTransition();
+  const [relatedPosts, setRelatedPosts] = useState<RelatedPostResult[]>([]);
+  // const deferredPost = useDeferredValue(post);
 
-  // useEffect(() => {
-  //   setShowRelatedPosts(false);
-  //   if (!post) return;
-  //   startTransition(() => {
-  //     setShowRelatedPosts(true);
-  //   });
-  // }, [post]);
+  useEffect(() => {
+    if (!post) {
+      setRelatedPosts([]);
+      return;
+    }
+    startTransition(() => {
+      setRelatedPosts(findRelatedPosts(post));
+    });
+  }, [post]);
 
   useEffect(() => {
     const foundPost = findPostForDetails(id);
@@ -73,8 +75,7 @@ const PostDetailScreen = () => {
   const hasNewComments = comments.length > prevCommentsLengthRef.current;
   prevCommentsLengthRef.current = comments.length;
 
-  // const relatedPosts = showRelatedPosts && post ? findRelatedPosts(post) : [];
-  const relatedPosts = deferredPost ? findRelatedPosts(deferredPost) : [];
+  // const relatedPosts = deferredPost ? findRelatedPosts(deferredPost) : [];
 
   const handleReply = useCallback((commentId: string, username: string) => {
     setReplyInfo({ commentId, username });
