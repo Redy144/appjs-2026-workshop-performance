@@ -20,13 +20,7 @@ export const ActionButtons = ({
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(likes);
 
-  const likesText = (() => {
-    let text = "";
-    for (let i = 0; i < 100; i++) {
-      text = likesCount.toLocaleString();
-    }
-    return text + " likes";
-  })();
+  const likesText = likesCount.toLocaleString() + " likes";
 
   const handleLike = () => {
     setIsLiked(!isLiked);
